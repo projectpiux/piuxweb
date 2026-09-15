@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Piux — Open Source i386 Operating System</title>
+   <link rel="icon" type="image/png" href="src/piux.png">   
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <img src="src/piux.png" alt="Piux logo" />
+      <span class="nt">Piux</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#commands">Commands</a></li>
+      <li><a href="#pwm">pWM</a></li>
+      <li><a href="#screenshots">Screenshots</a></li>
+      <li><a href="#community">Community</a></li>
+      <li><a href="#contribute">Contribute</a></li>
+    </ul>
+    <div class="nav-ctas">
+      <a href="https://fluxer.gg/Yz25F58m" class="btn btn-ghost" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        Fluxer
+      </a>
+      <a href="https://github.com/projectpiux" class="btn btn-green" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-grid">
+
+    <div class="hero-copy">
+      <div class="hero-pill">
+        <span class="dot"></span>
+        v0.6.5 BETA &nbsp;·&nbsp; rolling release
+      </div>
+
+      <h1>
+        A 32-bit x86 OS<br>
+        <span class="accent">built from scratch.</span>
+      </h1>
+
+      <p class="hero-desc">
+        Piux is a small, experimental i386 kernel and OS environment bootable via
+        GRUB Multiboot1. Written in NASM and freestanding C, it includes a
+        framebuffer GUI, tiled window manager, ext2 filesystem, and user
+        authentication — all in the open.
+      </p>
+
+      <div class="hero-actions">
+        <a href="https://github.com/projectpiux" class="btn btn-green btn-lg" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+          View on GitHub
+        </a>
+        <a href="https://fluxer.gg/Yz25F58m" class="btn btn-ghost btn-lg" target="_blank" rel="noopener">
+          Join the community
+        </a>
+      </div>
+
+      <div class="hero-meta">
+        <div class="meta-item">License <span class="meta-val">GPLv3</span></div>
+        <div class="meta-item">Language <span class="meta-val">NASM + C</span></div>
+        <div class="meta-item">Arch <span class="meta-val">i386 (32-bit)</span></div>
+        <div class="meta-item">Boot <span class="meta-val">GRUB Multiboot1</span></div>
+        <div class="meta-item">Video <span class="meta-val">1280×720 32bpp</span></div>
+      </div>
+    </div>
+
+    <div class="terminal" aria-hidden="true">
+      <div class="term-bar">
+        <div class="tb tb-r"></div>
+        <div class="tb tb-y"></div>
+        <div class="tb tb-g"></div>
+        <div class="term-title">piux — tty0</div>
+      </div>
+      <div class="term-body" id="termBody"></div>
+    </div>
+
+  </div>
+</section>
+
+
+<div class="strip" aria-hidden="true">
+  <div class="strip-track" id="stripTrack"></div>
+</div>
+
+
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <div class="s-label">// about the project</div>
+        <h2 class="s-title">Small kernel.<br>Real hardware.<br>Total transparency.</h2>
+        <div class="about-body" style="margin-top: 18px;">
+          <p>
+            Piux is a small 32-bit x86 experimental OS and kernel environment bootable
+            with GRUB Multiboot1. It is built with NASM, freestanding C, GNU <code style="color:var(--green);font-size:13px">ld</code>,
+            and a custom linker script — no borrowed kernel code, no external OS layer underneath.
+          </p>
+          <p>
+            The project follows a rolling-release model with stable ISO snapshots.
+            You can also manually compile at any commit to get the latest updates
+            or target a specific version of the OS.
+          </p>
+          <p>
+            Piux prioritizes small size, direct hardware interaction, simplicity, open
+            development, and learning by implementation. It is not intended to replace
+            mature general-purpose operating systems — it's built to understand them.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-num">i386<span class="unit"></span></div>
+            <div class="stat-lbl">32-bit x86 protected mode</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">16<span class="unit"> MiB</span></div>
+            <div class="stat-lbl">minimum RAM required</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">ext2<span class="unit"></span></div>
+            <div class="stat-lbl">native filesystem support</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">GPL<span class="unit">v3</span></div>
+            <div class="stat-lbl">open source license</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="features">
+  <div class="container">
+    <div class="feat-hd">
+      <div class="s-label">// kernel &amp; subsystems</div>
+      <h2 class="s-title">What's already inside</h2>
+      <p class="s-desc">
+        Every subsystem listed below was written from the ground up for Piux —
+        no external libraries, no OS calls, no shortcuts.
+      </p>
+    </div>
+
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🖥️</div>
+        <h3>Framebuffer Graphics</h3>
+        <p>Native 1280×720 rendering at 32-bit color via the Multiboot framebuffer.
+           Software text rendering with a custom bitmap font and double buffering
+           to prevent tearing during pWM redraws.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🪟</div>
+        <h3>pWM — Tiled Window Manager</h3>
+        <p>A text-based window manager that creates up to 4 tiled terminals. Each
+           terminal has its own output, input, scroll state, and command history.
+           Layout adapts automatically to framebuffer dimensions.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💾</div>
+        <h3>Ext2 Filesystem</h3>
+        <p>Full ext2 implementation over ATA PIO: superblocks, group descriptors,
+           variable-length inodes, direct/single/double-indirect blocks, inode and
+           block bitmap allocation, and persistent file editing via <code style="color:var(--green)">nano</code>.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⌨️</div>
+        <h3>PS/2 Keyboard &amp; Mouse</h3>
+        <p>PS/2 keyboard driver with QWERTY layout and Shift modifiers. PS/2 mouse
+           driver for pointer input, terminal focus switching, and wheel scrolling
+           within pWM terminals.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔐</div>
+        <h3>User Authentication</h3>
+        <p>Account management with SHA-256 password hashing, login, sudoer
+           configuration, and sudoer checks. A first-boot installer TUI creates
+           the Unix-style directory tree and user accounts on initial setup.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🗂️</div>
+        <h3>RAMFS Fallback</h3>
+        <p>When no ext2 disk is available, Piux falls back to an in-memory RAMFS
+           for basic filesystem operations. Enables the OS to boot and function
+           without any attached disk image.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section id="commands">
+  <div class="container">
+    <div class="s-label">// built-in commands</div>
+    <h2 class="s-title">Everything compiled into the kernel</h2>
+    <p class="s-desc">
+      Command handlers live in <code style="color:var(--green);font-size:13px">bin/</code> and are
+      compiled directly into the kernel. Type <code style="color:var(--green);font-size:13px">help</code>
+      at the prompt to list them all.
+    </p>
+    <div class="cmd-grid">
+      <div class="cmd-card">
+        <div class="cmd-name">help</div>
+        <div class="cmd-desc">Display all available commands</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">about</div>
+        <div class="cmd-desc">Show Piux version and system information</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">ls</div>
+        <div class="cmd-desc">List files and directories</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">cd</div>
+        <div class="cmd-desc">Change the current directory</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">cat</div>
+        <div class="cmd-desc">Read and print a file</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">touch</div>
+        <div class="cmd-desc">Create an empty file</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">mkdir</div>
+        <div class="cmd-desc">Create a new directory</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">nano</div>
+        <div class="cmd-desc">Edit and persist files to ext2</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">echo</div>
+        <div class="cmd-desc">Print text with quoted argument support</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">fs</div>
+        <div class="cmd-desc">Inspect and mount the ext2 filesystem</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">top</div>
+        <div class="cmd-desc">Show RAM and ext2 disk usage</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">clear</div>
+        <div class="cmd-desc">Clear the framebuffer display</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">pwm</div>
+        <div class="cmd-desc">Start, stop, inspect, or reload pWM</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">reboot</div>
+        <div class="cmd-desc">Reboot Piux</div>
+      </div>
+      <div class="cmd-card">
+        <div class="cmd-name">shutdown</div>
+        <div class="cmd-desc">Shut down Piux</div>
+      </div>
+      <div class="cmd-card" style="border-style: dashed; opacity:.6;">
+        <div class="cmd-name" style="color:var(--text-muted)">+ custom</div>
+        <div class="cmd-desc">Add your own via <code style="color:var(--green)">bin/mycommand.c</code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="pwm">
+  <div class="container">
+    <div class="s-label">// pWM — piux window manager</div>
+    <h2 class="s-title">Up to four tiled terminals</h2>
+
+    <div class="pwm-grid">
+      <div class="pwm-desc">
+        <p>
+          pWM is Piux's text-based window manager, inspired by minimal tiled
+          terminal environments. It starts automatically after login and creates
+          the first terminal session.
+        </p>
+        <p>
+          Each terminal has independent output, input, scroll state, and command
+          history. pWM uses a software double buffer for its redraw path,
+          reducing visible flickering while the interface updates.
+        </p>
+        <p>
+          Stopping pWM drops back to the minimal kernel shell. The same command
+          handlers available in the shell are reused inside every pWM terminal.
+        </p>
+
+        <div class="pwm-shortcuts">
+          <h4>Keyboard shortcuts</h4>
+          <div class="shortcut-list">
+            <div class="shortcut"><kbd>Ctrl+Q</kbd> <span>Open a new terminal (up to 4)</span></div>
+            <div class="shortcut"><kbd>Ctrl+C</kbd> <span>Close the focused terminal</span></div>
+            <div class="shortcut"><kbd>Ctrl+←</kbd> <span>Focus previous terminal</span></div>
+            <div class="shortcut"><kbd>Ctrl+→</kbd> <span>Focus next terminal</span></div>
+            <div class="shortcut"><kbd>↑ / ↓</kbd> <span>Navigate command history</span></div>
+            <div class="shortcut"><kbd>Mouse click</kbd> <span>Focus a terminal</span></div>
+            <div class="shortcut"><kbd>Mouse wheel</kbd> <span>Scroll focused terminal</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="pwm-layouts">
+          <div class="layout-card">
+            <h4>1 terminal</h4>
+            <pre class="layout-ascii">┌──────────────────┐
+│                  │
+│    Terminal 1    │
+│                  │
+└──────────────────┘</pre>
+          </div>
+          <div class="layout-card">
+            <h4>2 terminals</h4>
+            <pre class="layout-ascii">┌─────────┬─────────┐
+│         │         │
+│  Term 1 │  Term 2 │
+│         │         │
+└─────────┴─────────┘</pre>
+          </div>
+          <div class="layout-card">
+            <h4>3 terminals</h4>
+            <pre class="layout-ascii">┌─────────┬─────────┐
+│         │ Term 2  │
+│  Term 1 ├─────────┤
+│         │ Term 3  │
+└─────────┴─────────┘</pre>
+          </div>
+          <div class="layout-card">
+            <h4>4 terminals</h4>
+            <pre class="layout-ascii">┌─────────┬─────────┐
+│ Term 1  │ Term 2  │
+├─────────┼─────────┤
+│ Term 3  │ Term 4  │
+└─────────┴─────────┘</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="requirements" style="background: var(--surface); border-top: 1px solid var(--border-dim); border-bottom: 1px solid var(--border-dim);">
+  <div class="container">
+    <div class="s-label">// minimum requirements</div>
+    <h2 class="s-title">Runs on constrained hardware</h2>
+    <p class="s-desc">
+      Piux targets deliberately minimal specs. Actual compatibility should be verified
+      through QEMU configurations before testing on real hardware.
+    </p>
+    <div class="req-grid">
+      <div class="req-card">
+        <div class="req-icon">🧠</div>
+        <h4>RAM</h4>
+        <div class="req-val">16 MiB</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">💿</div>
+        <h4>Disk</h4>
+        <div class="req-val">8 MiB</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">⚙️</div>
+        <h4>CPU</h4>
+        <div class="req-val">i386 / x86</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">🔌</div>
+        <h4>Boot</h4>
+        <div class="req-val">BIOS + GRUB</div>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">🖥️</div>
+        <h4>Video</h4>
+        <div class="req-val">Multiboot FB</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="screenshots">
+  <div class="container">
+    <div class="screens-hd">
+      <div class="s-label">// the project in action</div>
+      <h2 class="s-title">See what's been built</h2>
+      <p class="s-desc">
+        Screenshots from active development builds. Follow the GitHub repository
+        for the latest state of the project.
+      </p>
+    </div>
+
+    <div class="screens-grid">
+      <div class="screen-card wide">
+        <div class="screen-img-wrap">
+          <img src="src/screenshots/piux-first-boot.png" alt="Piux boot sequence and first-boot installer" />
+          <span class="screen-ph">// first-boot installer TUI</span>
+        </div>
+        <div class="screen-cap">
+          <h4>First-Boot Installer</h4>
+          <p>GRUB handoff → BootX → kernel_main → installer TUI → Unix directory tree setup</p>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-img-wrap">
+          <img src="src/screenshots/pwm.png" alt="pWM tiled terminal environment" />
+          <span class="screen-ph">// pWM — 4 terminals</span>
+        </div>
+        <div class="screen-cap">
+          <h4>pwm Window Manager</h4>
+          <p>Four tiled terminals, framebuffer 1280×720 @ 32bpp</p>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-img-wrap">
+          <img src="src/screenshots/shell-ext2.png" alt="Piux shell and ext2 filesystem" />
+          <span class="screen-ph">// shell + ext2</span>
+        </div>
+        <div class="screen-cap">
+          <h4>Shell &amp; Ext2 Filesystem</h4>
+          <p>Built-in commands operating on a mounted ext2 disk</p>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-img-wrap">
+          <img src="src/screenshots/top.png" alt="Piux top command resource monitor" />
+          <span class="screen-ph">// top — resource monitor</span>
+        </div>
+        <div class="screen-cap">
+          <h4>Resource Monitor (top)</h4>
+          <p>RAM and ext2 storage usage reported in real time</p>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div class="screen-img-wrap">
+          <img src="src/screenshots/nano.png" alt="Piux nano file editor on ext2" />
+          <span class="screen-ph">// nano — file editor</span>
+        </div>
+        <div class="screen-cap">
+          <h4>nano — File Editor</h4>
+          <p>Creates and writes files directly to the ext2 partition</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="community">
+  <div class="container">
+    <div class="s-label">// get involved</div>
+    <h2 class="s-title">Join the project</h2>
+    <p class="s-desc">
+      Piux is built entirely in the open. Every design decision, bug report,
+      and patch happens publicly. Whether you're a kernel hacker or just OS-curious,
+      there's a place for you here.
+    </p>
+
+    <div class="comm-grid">
+      <a href="https://github.com/projectpiux" class="comm-card" target="_blank" rel="noopener">
+        <div class="comm-icon">
+          <svg width="28" height="28" viewBox="0 0 16 16" fill="currentColor" style="color: var(--text-dim)">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+        </div>
+        <h3>GitHub</h3>
+        <p>Browse the source, file issues, and open pull requests. Check
+           existing issues before reporting bugs — include QEMU config and
+           build output for best results.</p>
+        <span class="comm-link">
+          View the repository
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8h10M8 3l5 5-5 5"/>
+          </svg>
+        </span>
+      </a>
+
+      <a href="https://fluxer.gg/Yz25F58m" class="comm-card" target="_blank" rel="noopener">
+        <div class="comm-icon">💬</div>
+        <h3>Fluxer Community</h3>
+        <p>Join the Fluxer server to discuss development, ask questions, share
+           ideas, and connect with everyone building Piux. The best place to
+           get help before opening an issue.</p>
+        <span class="comm-link">
+          Join on Fluxer
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 8h10M8 3l5 5-5 5"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<section id="contribute">
+  <div class="container">
+    <div class="s-label">// start contributing</div>
+    <h2 class="s-title">From clone to first patch</h2>
+    <p class="s-desc">
+      Fork the repo, build it, boot it in QEMU, pick a
+      <span style="color:var(--green)">good-first-issue</span>, and send a PR.
+      Keep hardware-specific functionality in its own module where possible.
+    </p>
+
+    <div class="contrib-grid">
+      <div class="contrib-step">
+        <div class="step-n">01</div>
+        <h4>Install prerequisites</h4>
+        <p>Install the toolchain. Piux needs NASM, GCC, binutils, GRUB tools,
+           xorriso, QEMU, and e2fsprogs for disk image support.</p>
+        <div class="code-snippet">
+          <div><span class="cs-comment"># Debian / Ubuntu</span></div>
+          <div><span class="cs-prompt">$</span> sudo apt-get install nasm gcc binutils \</div>
+          <div>&nbsp;&nbsp;grub-pc-bin xorriso \</div>
+          <div>&nbsp;&nbsp;qemu-system-x86 e2fsprogs</div>
+        </div>
+      </div>
+
+      <div class="contrib-step">
+        <div class="step-n">02</div>
+        <h4>Clone &amp; build the ISO</h4>
+        <p>Clone the repository, then build. This produces <code style="color:var(--green);font-size:12px">piux.iso</code>,
+           a bootable GRUB ISO. Use <code style="color:var(--green);font-size:12px">fast-all.sh</code> for an
+           interactive TUI with build and run options.</p>
+        <div class="code-snippet">
+          <div><span class="cs-prompt">$</span> git clone https://github.com/projectpiux/piux-kernel.git</div>
+          <div><span class="cs-prompt">$</span> cd piux-kernel</div>
+          <div><span class="cs-prompt">$</span> make clean &amp;&amp; make</div>
+        </div>
+      </div>
+
+      <div class="contrib-step">
+        <div class="step-n">03</div>
+        <h4>Boot it &amp; send a PR</h4>
+        <p>Run in QEMU to see Piux boot. Then create a branch, make your change,
+           and open a Pull Request. QEMU provides the framebuffer and ext2 disk.</p>
+        <div class="code-snippet">
+          <div><span class="cs-prompt">$</span> make run</div>
+          <div><span class="cs-comment"># or: ./fast-all.sh</span></div>
+          <div><span class="cs-prompt">$</span> git checkout <span class="cs-flag">-b</span> feature/amazing-feature</div>
+          <div><span class="cs-prompt">$</span> gh pr create</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="future">
+  <div class="container">
+    <div class="s-label">// future improvements</div>
+    <h2 class="s-title">What's coming next</h2>
+    <p class="s-desc">
+      Planned development targets, roughly in order of dependency.
+      Want to help with one? Open an issue or drop into Fluxer.
+    </p>
+    <div class="future-grid">
+      <div class="future-item"><span class="fi-dot"></span><span>Interrupt descriptor table (IDT)</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Hardware interrupt handling</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Exception handling</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Protected-mode paging</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Physical / virtual memory management</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>malloc / free</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>User mode</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>System calls</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Processes &amp; task switching</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Scheduler</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>IPC</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Pipes and shell redirection</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>ext2 deletion, rename, truncate</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Triple-indirect ext2 support</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>More keyboard layouts + AltGr</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Serial console (COM1)</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Improved partition support</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Networking</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Loadable kernel modules</span></div>
+      <div class="future-item"><span class="fi-dot"></span><span>Graphical pWM</span></div>
+      <div class="future-item special"><span class="fi-dot"></span><span>DOOM port 💀</span></div>
+    </div>
+  </div>
+</section>
+
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="f-logo">
+          <img src="src/piux.png" alt="Piux logo" />
+          <span class="nt">Piux</span>
+        </div>
+        <p class="f-tagline">A small 32-bit x86 OS built completely from scratch.</p>
+        <p class="f-credits">
+          Built with help from<br>
+          <span>NASM documentation · OSDev.org</span><br>
+          <span>GNU GRUB / Multiboot docs</span><br>
+          <span>The open-source OS dev community</span>
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <div class="f-col">
+          <h5>Project</h5>
+          <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#commands">Commands</a></li>
+            <li><a href="#pwm">pwm</a></li>
+            <li><a href="#screenshots">Screenshots</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h5>Community</h5>
+          <ul>
+            <li><a href="https://github.com/projectpiux" target="_blank" rel="noopener">GitHub</a></li>
+            <li><a href="https://fluxer.gg/Yz25F58m" target="_blank" rel="noopener">Fluxer</a></li>
+            <li><a href="https://github.com/projectpiux/piux-kernel/issues" target="_blank" rel="noopener">Issue Tracker</a></li>
+          </ul>
+        </div>
+        <div class="f-col">
+          <h5>Resources</h5>
+          <ul>
+            <li><a href="https://github.com/projectpiux/piux-kernel/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing Guide</a></li>
+            <li><a href="https://github.com/projectpiux/piux-kernel/blob/main/LICENSE" target="_blank" rel="noopener">License (GPLv3)</a></li>
+            <li><a href="https://github.com/projectpiux/piux-kernel/blob/main/README.md" target="_blank" rel="noopener">README</a></li>
+            <li><a href="https://github.com/projectpiux/piux-kernel/blob/main/docs/PWM-COMMANDS.md" target="_blank" rel="noopener">pWM Docs</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 The Piux Project Contributors</div>
+      <div class="footer-right">
+        <span>Released under the</span>
+        <span class="f-badge">GPLv3</span>
+        <span>license</span>
+      </div>
+    </div>
+  </div>
+</footer>
+  <script src="js/index.js"></script>
+</body>
+</html>
