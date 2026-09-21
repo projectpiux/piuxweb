@@ -1,679 +1,883 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Piux — Open Source i386 Operating System</title>
-   <link rel="icon" type="image/png" href="src/piux.png">   
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piux Kernel — Experimental x86 Operating System</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: "DejaVu Sans", "Bitstream Vera Sans", Verdana, Geneva, sans-serif;
+  font-size: 13px;
+  background: #141c28;
+  color: #c0ccd8;
+  line-height: 1.55;
+}
+
+#header {
+  background: linear-gradient(to bottom, #0a1220, #111e32);
+  border-bottom: 2px solid #2460a8;
+}
+#header-inner {
+  width: 980px; margin: 0 auto;
+  display: flex; align-items: center;
+  padding: 16px 0;
+  gap: 20px;
+}
+#logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+}
+#logo img {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 200px;
+  filter: drop-shadow(0 0 12px rgba(61,154,255,0.35));
+}
+#tagline {
+  border-left: 1px solid #2460a8;
+  padding-left: 18px;
+  color: #6a88a0;
+  font-size: 11px;
+  line-height: 1.7;
+}
+#tagline strong { color: #9ab8d0; }
+
+#nav { background: #0e1928; border-bottom: 1px solid #1a3558; }
+#nav ul {
+  list-style: none;
+  width: 980px; margin: 0 auto;
+  display: flex;
+}
+#nav ul li a {
+  display: block;
+  padding: 9px 16px;
+  color: #8aaccc;
+  text-decoration: none;
+  font-size: 11px; font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-right: 1px solid #1a3558;
+}
+#nav ul li a:hover,
+#nav ul li a.active {
+  background: #2460a8; color: #fff;
+}
+
+#wrapper {
+  width: 980px; margin: 18px auto;
+  display: flex; gap: 18px;
+}
+#content { flex: 1; min-width: 0; }
+#sidebar { width: 214px; flex-shrink: 0; }
+
+.section {
+  background: #0e1928;
+  border: 1px solid #1a3558;
+  margin-bottom: 18px;
+}
+.section-header {
+  background: linear-gradient(to bottom, #1a3558, #122840);
+  padding: 7px 12px;
+  font-size: 11px; font-weight: bold;
+  color: #8aaccc;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  border-bottom: 1px solid #1a3558;
+}
+.section-body { padding: 14px 15px; }
+
+#hero {
+  background: linear-gradient(135deg, #09131e 0%, #0e1f34 60%, #091525 100%);
+  border: 1px solid #2460a8;
+  padding: 26px 24px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+#hero h1 {
+  font-family: "Courier New", monospace;
+  font-size: 30px; color: #3d9aff;
+  margin-bottom: 6px;
+  letter-spacing: -1px;
+}
+#hero p { color: #6a88a0; font-size: 12px; margin-bottom: 14px; }
+.version-badge {
+  display: inline-block;
+  background: #0c3a70; color: #8aaccc;
+  padding: 2px 10px; font-size: 11px;
+  font-family: "Courier New", monospace;
+  border: 1px solid #2460a8;
+  margin-bottom: 14px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 7px 18px;
+  background: linear-gradient(to bottom, #2460a8, #163a78);
+  color: #fff; text-decoration: none;
+  font-size: 11px; font-weight: bold;
+  border: 1px solid #3070b8;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin: 3px; cursor: pointer;
+}
+.btn:hover { background: linear-gradient(to bottom, #3070b8, #20489a); }
+.btn-green {
+  background: linear-gradient(to bottom, #286a34, #184822);
+  border-color: #38804a;
+}
+.btn-green:hover { background: linear-gradient(to bottom, #38804a, #286a34); }
+
+.feature-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+}
+.feature-item {
+  background: #09131e; border: 1px solid #16304e;
+  padding: 6px 10px; font-size: 11px; color: #8aaccc;
+}
+.feature-item::before { content: "✓ "; color: #3d9aff; font-weight: bold; }
+
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th {
+  background: #0c2848; color: #8aaccc;
+  padding: 6px 10px; text-align: left;
+  border: 1px solid #1a3558; font-weight: bold;
+}
+td {
+  padding: 6px 10px; border: 1px solid #152840;
+  color: #b8c8d8; vertical-align: top;
+}
+tr:nth-child(even) td { background: #09131e; }
+tr:nth-child(odd)  td { background: #0c1c2e; }
+
+pre, code {
+  font-family: "Courier New", "Lucida Console", monospace;
+  font-size: 12px;
+}
+pre {
+  background: #060e18;
+  border: 1px solid #1a3558;
+  border-left: 3px solid #2460a8;
+  padding: 11px 13px; overflow-x: auto;
+  color: #7ab8d8; line-height: 1.65;
+  margin: 8px 0;
+}
+code {
+  background: #060e18; color: #7ab8d8;
+  padding: 1px 4px; border: 1px solid #152840;
+}
+
+.sb-box { background: #0e1928; border: 1px solid #1a3558; margin-bottom: 14px; }
+.sb-header {
+  background: linear-gradient(to bottom, #1a3558, #122840);
+  padding: 6px 10px; font-size: 10px; font-weight: bold;
+  color: #8aaccc; text-transform: uppercase; letter-spacing: 0.6px;
+  border-bottom: 1px solid #1a3558;
+}
+.sb-body { padding: 9px 10px; }
+.sb-body p { font-size: 11px; color: #6a88a0; margin-bottom: 7px; line-height: 1.5; }
+.sb-body ul { list-style: none; padding: 0; }
+.sb-body ul li {
+  font-size: 11px; padding: 3px 0;
+  border-bottom: 1px solid #09131e;
+  color: #6a88a0;
+}
+.sb-body ul li a { color: #3d9aff; text-decoration: none; }
+.sb-body ul li a:hover { text-decoration: underline; }
+.stat-row {
+  display: flex; justify-content: space-between;
+  padding: 4px 0; border-bottom: 1px solid #09131e;
+  font-size: 11px;
+}
+.stat-label { color: #6a88a0; }
+.stat-value { color: #3d9aff; font-family: "Courier New", monospace; }
+
+h2 {
+  font-size: 15px; color: #3d9aff;
+  margin: 14px 0 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #1a3558;
+  font-family: "Courier New", monospace;
+}
+h3 { font-size: 12px; color: #7ab8d8; margin: 10px 0 6px; }
+p { color: #8a9aaa; margin-bottom: 8px; font-size: 12px; line-height: 1.6; }
+a { color: #3d9aff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.warning {
+  background: #241400; border: 1px solid #7a3c00;
+  border-left: 3px solid #e07000;
+  padding: 7px 11px; font-size: 11px; color: #bb7700;
+  margin: 8px 0;
+}
+.info {
+  background: #001624; border: 1px solid #004466;
+  border-left: 3px solid #2080aa;
+  padding: 7px 11px; font-size: 11px; color: #6aaabb;
+  margin: 8px 0;
+}
+
+.tabs {
+  display: flex; border-bottom: 1px solid #1a3558;
+  background: #09131e;
+}
+.tab {
+  padding: 7px 14px; font-size: 11px; color: #6a88a0;
+  cursor: pointer; font-weight: bold;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  border-top: 1px solid transparent;
+  border-right: 1px solid #1a3558;
+  margin-bottom: -1px;
+}
+.tab.active {
+  background: #0e1928; color: #8aaccc;
+  border-top-color: #2460a8;
+  border-bottom-color: #0e1928;
+}
+.tab:hover:not(.active) { background: #0a1624; color: #8aaccc; }
+.tab-content { display: none; padding: 14px 15px; }
+.tab-content.active { display: block; }
+
+kbd {
+  background: #0c2848; border: 1px solid #2460a8;
+  border-bottom: 2px solid #163a78;
+  padding: 1px 5px;
+  font-family: "Courier New", monospace; font-size: 11px;
+  color: #8aaccc;
+}
+
+.boot-flow { counter-reset: bs; }
+.boot-step {
+  display: flex; align-items: flex-start;
+  padding: 6px 0; border-bottom: 1px solid #09131e;
+  font-size: 12px; color: #8a9aaa;
+}
+.boot-num {
+  width: 22px; height: 22px;
+  background: #0c3a70; border: 1px solid #2460a8;
+  color: #3d9aff; font-family: "Courier New", monospace;
+  font-size: 11px; font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+  margin-right: 10px; flex-shrink: 0;
+}
+
+.cmd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.cmd-item {
+  background: #060e18; border: 1px solid #152840;
+  padding: 6px 10px; font-size: 11px;
+}
+.cmd-name { font-family: "Courier New", monospace; color: #3d9aff; font-weight: bold; }
+.cmd-desc { color: #6a88a0; margin-top: 2px; }
+
+.pwm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pwm-box {
+  background: #060e18; border: 1px solid #152840;
+  padding: 10px; text-align: center;
+}
+.pwm-label { font-size: 10px; color: #6a88a0; margin-bottom: 6px; }
+.pwm-box pre {
+  font-size: 10px; border: none; background: transparent;
+  padding: 0; color: #3d9aff; border-left: none;
+  text-align: left; display: inline-block; margin: 0;
+}
+
+.check-list, .cross-list, .arrow-list { list-style: none; padding: 0; }
+.check-list li, .cross-list li, .arrow-list li {
+  padding: 4px 0; border-bottom: 1px solid #09131e;
+  font-size: 12px; color: #6a88a0;
+}
+.check-list li::before { content: "✓ "; color: #44aa44; }
+.check-list li.done::before { content: "✓ "; color: #44aa44; }
+.cross-list li::before  { content: "✗ "; color: #884444; }
+.arrow-list li::before  { content: "→ "; color: #3d9aff; }
+.arrow-list li.done { color: #3a6040; }
+.arrow-list li.done::before { content: "✓ "; color: #44aa44; }
+
+#footer {
+  background: #08111c;
+  border-top: 2px solid #1a3558;
+  padding: 16px 0; margin-top: 10px;
+}
+#footer-inner {
+  width: 980px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+}
+#footer p { font-size: 11px; color: #3a5060; margin: 0; }
+#footer a { color: #2460a8; }
+
+::-webkit-scrollbar { width: 8px; background: #060e18; }
+::-webkit-scrollbar-thumb { background: #2460a8; }
+</style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <a href="#" class="nav-logo">
-      <img src="src/piux.png" alt="Piux logo" />
-      <span class="nt">Piux</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#features">Features</a></li>
-      <li><a href="#commands">Commands</a></li>
-      <li><a href="#pwm">pWM</a></li>
-      <li><a href="#screenshots">Screenshots</a></li>
-      <li><a href="#community">Community</a></li>
-      <li><a href="#contribute">Contribute</a></li>
-    </ul>
-    <div class="nav-ctas">
-      <a href="https://fluxer.gg/Yz25F58m" class="btn btn-ghost" target="_blank" rel="noopener">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-        Fluxer
-      </a>
-      <a href="https://github.com/projectpiux" class="btn btn-green" target="_blank" rel="noopener">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-        </svg>
-        GitHub
-      </a>
+<div id="header">
+  <div id="header-inner">
+    <div id="logo"><img src="../src/piux.png" alt="Piux logo"></div>
+    <div id="tagline">
+      <strong>Experimental 32-bit x86 Operating System &amp; Kernel</strong><br>
+      GRUB Multiboot1 &nbsp;·&nbsp; i386 Protected Mode &nbsp;·&nbsp; Framebuffer 1280×720 &nbsp;·&nbsp; Ext2 &amp; RAMFS &nbsp;·&nbsp; pWM
     </div>
   </div>
-</nav>
-
-
-<section class="hero">
-  <div class="hero-grid">
-
-    <div class="hero-copy">
-      <div class="hero-pill">
-        <span class="dot"></span>
-        v0.6.5 BETA &nbsp;·&nbsp; rolling release
-      </div>
-
-      <h1>
-        A 32-bit x86 OS<br>
-        <span class="accent">built from scratch.</span>
-      </h1>
-
-      <p class="hero-desc">
-        Piux is a small, experimental i386 kernel and OS environment bootable via
-        GRUB Multiboot1. Written in NASM and freestanding C, it includes a
-        framebuffer GUI, tiled window manager, ext2 filesystem, and user
-        authentication — all in the open.
-      </p>
-
-      <div class="hero-actions">
-        <a href="https://github.com/projectpiux" class="btn btn-green btn-lg" target="_blank" rel="noopener">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-          </svg>
-          View on GitHub
-        </a>
-        <a href="https://fluxer.gg/Yz25F58m" class="btn btn-ghost btn-lg" target="_blank" rel="noopener">
-          Join the community
-        </a>
-      </div>
-
-      <div class="hero-meta">
-        <div class="meta-item">License <span class="meta-val">GPLv3</span></div>
-        <div class="meta-item">Language <span class="meta-val">NASM + C</span></div>
-        <div class="meta-item">Arch <span class="meta-val">i386 (32-bit)</span></div>
-        <div class="meta-item">Boot <span class="meta-val">GRUB Multiboot1</span></div>
-        <div class="meta-item">Video <span class="meta-val">1280×720 32bpp</span></div>
-      </div>
-    </div>
-
-    <div class="terminal" aria-hidden="true">
-      <div class="term-bar">
-        <div class="tb tb-r"></div>
-        <div class="tb tb-y"></div>
-        <div class="tb tb-g"></div>
-        <div class="term-title">piux — tty0</div>
-      </div>
-      <div class="term-body" id="termBody"></div>
-    </div>
-
-  </div>
-</section>
-
-
-<div class="strip" aria-hidden="true">
-  <div class="strip-track" id="stripTrack"></div>
 </div>
 
+<div id="nav">
+  <ul>
+    <li><a href="#about" class="active">About</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#install">Build &amp; Install</a></li>
+    <li><a href="#docs">Documentation</a></li>
+    <li><a href="#commands">Commands</a></li>
+    <li><a href="#pwm">pWM</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contribute">Contribute</a></li>
+    <li><a href="https://github.com/projectpiux" target="_blank">GitHub ↗</a></li>
+  </ul>
+</div>
 
-<section id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div>
-        <div class="s-label">// about the project</div>
-        <h2 class="s-title">Small kernel.<br>Real hardware.<br>Total transparency.</h2>
-        <div class="about-body" style="margin-top: 18px;">
-          <p>
-            Piux is a small 32-bit x86 experimental OS and kernel environment bootable
-            with GRUB Multiboot1. It is built with NASM, freestanding C, GNU <code style="color:var(--green);font-size:13px">ld</code>,
-            and a custom linker script — no borrowed kernel code, no external OS layer underneath.
-          </p>
-          <p>
-            The project follows a rolling-release model with stable ISO snapshots.
-            You can also manually compile at any commit to get the latest updates
-            or target a specific version of the OS.
-          </p>
-          <p>
-            Piux prioritizes small size, direct hardware interaction, simplicity, open
-            development, and learning by implementation. It is not intended to replace
-            mature general-purpose operating systems — it's built to understand them.
-          </p>
-        </div>
-      </div>
+<div id="wrapper">
+<div id="content">
 
-      <div>
-        <div class="stat-grid">
-          <div class="stat-card">
-            <div class="stat-num">i386<span class="unit"></span></div>
-            <div class="stat-lbl">32-bit x86 protected mode</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">16<span class="unit"> MiB</span></div>
-            <div class="stat-lbl">minimum RAM required</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">ext2<span class="unit"></span></div>
-            <div class="stat-lbl">native filesystem support</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-num">GPL<span class="unit">v3</span></div>
-            <div class="stat-lbl">open source license</div>
-          </div>
-        </div>
+  <div id="hero">
+    <div class="version-badge">Version 0.6.5 BETA — Rolling Release</div>
+    <h1>Piux Kernel</h1>
+    <p>A small, experimental 32-bit x86 operating system bootable with GRUB Multiboot1.<br>
+    Built with NASM, freestanding C, GNU ld, and a custom linker script.</p>
+    <a href="https://github.com/projectpiux" class="btn btn-green">GitHub</a>
+    <a href="#install" class="btn">Build Guide</a>
+    <a href="#docs" class="btn">Documentation</a>
+  </div>
+
+  <div class="section" id="about">
+    <div class="section-header">About Piux</div>
+    <div class="section-body">
+      <p>Piux is a rolling-release experimental operating system kernel targeting the <strong>i386 32-bit architecture</strong>. It boots via GRUB Multiboot1 and renders graphics directly to a framebuffer at 1280×720 in 32-bit color. The tiled terminal window manager <strong>pWM</strong> provides the primary user environment after login.</p>
+      <p>The project ships with a built-in shell, an ext2 filesystem driver, PS/2 keyboard and mouse support, SHA-256 user authentication, a first-boot installer TUI, and a minimal network stack (RTL8139 + ARP/IPv4/ICMP/UDP/TCP). A RAMFS fallback provides basic filesystem operations when no ext2 disk is available.</p>
+      <p>Piux is designed for learning, experimentation, and exploration of low-level OS and kernel development. Stable ISO snapshots are provided alongside the rolling model — you can also compile any commit to target a specific revision.</p>
+      <div class="info">Piux is not intended to replace mature general-purpose operating systems at its current stage. Minimum target: 16 MiB RAM, 8 MiB disk, any i386-compatible CPU.</div>
+    </div>
+  </div>
+
+  <div class="section" id="features">
+    <div class="section-header">Features</div>
+    <div class="section-body">
+      <div class="feature-grid">
+        <div class="feature-item">Multiboot1 compatible — boots with GRUB</div>
+        <div class="feature-item">i386 32-bit x86 protected-mode kernel</div>
+        <div class="feature-item">Framebuffer graphics — 1280×720, 32bpp</div>
+        <div class="feature-item">Software double buffering (pWM redraws)</div>
+        <div class="feature-item">Bitmap font — full printable ASCII</div>
+        <div class="feature-item">PS/2 keyboard — QWERTY with Shift modifiers</div>
+        <div class="feature-item">PS/2 mouse — pointer, focus, wheel scroll</div>
+        <div class="feature-item">Built-in shell with command history</div>
+        <div class="feature-item">ATA PIO disk driver — primary IDE channel</div>
+        <div class="feature-item">Ext2 filesystem — read, write, create</div>
+        <div class="feature-item">RAMFS fallback — no disk required</div>
+        <div class="feature-item">pWM tiled terminal window manager (1–4 panes)</div>
+        <div class="feature-item">First-boot installer TUI</div>
+        <div class="feature-item">User authentication — SHA-256 password hashing</div>
+        <div class="feature-item">Sudoer configuration and checks</div>
+        <div class="feature-item">VFS — Unix-style file descriptors (vfs_open…)</div>
+        <div class="feature-item">int 0x80 syscall interface (9 syscalls)</div>
+        <div class="feature-item">IDT, PIT IRQ, page-fault &amp; GP gates</div>
+        <div class="feature-item">Protected-mode identity paging</div>
+        <div class="feature-item">Kernel/user GDT and TSS</div>
+        <div class="feature-item">Kernel process table &amp; cooperative scheduler</div>
+        <div class="feature-item">Ring3 ELF loader — run command</div>
+        <div class="feature-item">RTL8139 PCI driver (polling mode)</div>
+        <div class="feature-item">ARP / IPv4 / ICMP / UDP / minimal TCP</div>
+        <div class="feature-item">pix package manager — install/remove over HTTP</div>
+        <div class="feature-item">Resource monitor (top) — RAM &amp; ext2 stats</div>
+        <div class="feature-item">Real ext2 file deletion (inode &amp; blocks freed)</div>
+        <div class="feature-item">Configuration files embedded from etc/</div>
       </div>
     </div>
   </div>
-</section>
 
-
-<section id="features">
-  <div class="container">
-    <div class="feat-hd">
-      <div class="s-label">// kernel &amp; subsystems</div>
-      <h2 class="s-title">What's already inside</h2>
-      <p class="s-desc">
-        Every subsystem listed below was written from the ground up for Piux —
-        no external libraries, no OS calls, no shortcuts.
-      </p>
-    </div>
-
-    <div class="feat-grid">
-      <div class="feat-card">
-        <div class="feat-icon">🖥️</div>
-        <h3>Framebuffer Graphics</h3>
-        <p>Native 1280×720 rendering at 32-bit color via the Multiboot framebuffer.
-           Software text rendering with a custom bitmap font and double buffering
-           to prevent tearing during pWM redraws.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🪟</div>
-        <h3>pWM — Tiled Window Manager</h3>
-        <p>A text-based window manager that creates up to 4 tiled terminals. Each
-           terminal has its own output, input, scroll state, and command history.
-           Layout adapts automatically to framebuffer dimensions.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">💾</div>
-        <h3>Ext2 Filesystem</h3>
-        <p>Full ext2 implementation over ATA PIO: superblocks, group descriptors,
-           variable-length inodes, direct/single/double-indirect blocks, inode and
-           block bitmap allocation, and persistent file editing via <code style="color:var(--green)">nano</code>.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">⌨️</div>
-        <h3>PS/2 Keyboard &amp; Mouse</h3>
-        <p>PS/2 keyboard driver with QWERTY layout and Shift modifiers. PS/2 mouse
-           driver for pointer input, terminal focus switching, and wheel scrolling
-           within pWM terminals.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🔐</div>
-        <h3>User Authentication</h3>
-        <p>Account management with SHA-256 password hashing, login, sudoer
-           configuration, and sudoer checks. A first-boot installer TUI creates
-           the Unix-style directory tree and user accounts on initial setup.</p>
-      </div>
-      <div class="feat-card">
-        <div class="feat-icon">🗂️</div>
-        <h3>RAMFS Fallback</h3>
-        <p>When no ext2 disk is available, Piux falls back to an in-memory RAMFS
-           for basic filesystem operations. Enables the OS to boot and function
-           without any attached disk image.</p>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-
-<section id="commands">
-  <div class="container">
-    <div class="s-label">// built-in commands</div>
-    <h2 class="s-title">Everything compiled into the kernel</h2>
-    <p class="s-desc">
-      Command handlers live in <code style="color:var(--green);font-size:13px">bin/</code> and are
-      compiled directly into the kernel. Type <code style="color:var(--green);font-size:13px">help</code>
-      at the prompt to list them all.
-    </p>
-    <div class="cmd-grid">
-      <div class="cmd-card">
-        <div class="cmd-name">help</div>
-        <div class="cmd-desc">Display all available commands</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">about</div>
-        <div class="cmd-desc">Show Piux version and system information</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">ls</div>
-        <div class="cmd-desc">List files and directories</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">cd</div>
-        <div class="cmd-desc">Change the current directory</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">cat</div>
-        <div class="cmd-desc">Read and print a file</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">touch</div>
-        <div class="cmd-desc">Create an empty file</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">mkdir</div>
-        <div class="cmd-desc">Create a new directory</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">nano</div>
-        <div class="cmd-desc">Edit and persist files to ext2</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">echo</div>
-        <div class="cmd-desc">Print text with quoted argument support</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">fs</div>
-        <div class="cmd-desc">Inspect and mount the ext2 filesystem</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">top</div>
-        <div class="cmd-desc">Show RAM and ext2 disk usage</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">clear</div>
-        <div class="cmd-desc">Clear the framebuffer display</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">pwm</div>
-        <div class="cmd-desc">Start, stop, inspect, or reload pWM</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">reboot</div>
-        <div class="cmd-desc">Reboot Piux</div>
-      </div>
-      <div class="cmd-card">
-        <div class="cmd-name">shutdown</div>
-        <div class="cmd-desc">Shut down Piux</div>
-      </div>
-      <div class="cmd-card" style="border-style: dashed; opacity:.6;">
-        <div class="cmd-name" style="color:var(--text-muted)">+ custom</div>
-        <div class="cmd-desc">Add your own via <code style="color:var(--green)">bin/mycommand.c</code></div>
-      </div>
+  <div class="section" id="requirements">
+    <div class="section-header">Minimum Requirements</div>
+    <div class="section-body">
+      <table>
+        <tr><th>Component</th><th>Minimum</th><th>Notes</th></tr>
+        <tr><td><strong>RAM</strong></td><td>16 MiB</td><td>Default QEMU config uses more resources than the minimum</td></tr>
+        <tr><td><strong>Disk</strong></td><td>8 MiB</td><td>Bootable installation + filesystem; RAMFS fallback needs no disk</td></tr>
+        <tr><td><strong>CPU</strong></td><td>32-bit x86 / i386</td><td>Any i386-compatible processor</td></tr>
+        <tr><td><strong>Boot</strong></td><td>BIOS / Legacy</td><td>GRUB Multiboot1 — UEFI not supported</td></tr>
+        <tr><td><strong>Video</strong></td><td>Multiboot framebuffer</td><td>Must be able to provide 1280×720×32bpp</td></tr>
+      </table>
+      <div class="info" style="margin-top:11px;">Actual compatibility should be verified through testing on increasingly constrained QEMU configurations and real hardware.</div>
     </div>
   </div>
-</section>
 
+  <div class="section" id="install">
+    <div class="section-header">Build &amp; Installation</div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab(this,'t-deps')">Dependencies</div>
+      <div class="tab" onclick="switchTab(this,'t-build')">Build</div>
+      <div class="tab" onclick="switchTab(this,'t-run')">Run (QEMU)</div>
+      <div class="tab" onclick="switchTab(this,'t-hw')">Real Hardware</div>
+      <div class="tab" onclick="switchTab(this,'t-gdb')">GDB Debug</div>
+    </div>
 
-<section id="pwm">
-  <div class="container">
-    <div class="s-label">// pWM — piux window manager</div>
-    <h2 class="s-title">Up to four tiled terminals</h2>
+    <div class="tab-content active" id="t-deps">
+      <h3>Debian / Ubuntu</h3>
+      <pre>sudo apt-get install nasm gcc binutils grub-pc-bin xorriso qemu-system-x86 e2fsprogs</pre>
+      <h3>Fedora / RHEL</h3>
+      <pre>sudo dnf install nasm gcc binutils grub2-tools xorriso qemu-system-x86 e2fsprogs</pre>
+      <h3>macOS (Homebrew)</h3>
+      <pre>brew install nasm gcc binutils grub xorriso qemu e2fsprogs</pre>
+    </div>
 
-    <div class="pwm-grid">
-      <div class="pwm-desc">
-        <p>
-          pWM is Piux's text-based window manager, inspired by minimal tiled
-          terminal environments. It starts automatically after login and creates
-          the first terminal session.
-        </p>
-        <p>
-          Each terminal has independent output, input, scroll state, and command
-          history. pWM uses a software double buffer for its redraw path,
-          reducing visible flickering while the interface updates.
-        </p>
-        <p>
-          Stopping pWM drops back to the minimal kernel shell. The same command
-          handlers available in the shell are reused inside every pWM terminal.
-        </p>
+    <div class="tab-content" id="t-build">
+      <p>Clone and enter the repository:</p>
+      <pre>git clone https://github.com/projectpiux/piux-kernel.git
+cd piux-kernel-main</pre>
+      <p>Build the ISO:</p>
+      <pre>make clean
+make</pre>
+      <p>This generates <code>piux.iso</code>, a bootable GRUB ISO image.</p>
+      <p>Alternatively, use the interactive TUI build script:</p>
+      <pre>./fast-all.sh</pre>
+      <p><code>fast-all.sh</code> provides options to: compile from scratch, boot an existing build, create an ext2 disk image and boot, or exit.</p>
+    </div>
 
-        <div class="pwm-shortcuts">
-          <h4>Keyboard shortcuts</h4>
-          <div class="shortcut-list">
-            <div class="shortcut"><kbd>Ctrl+Q</kbd> <span>Open a new terminal (up to 4)</span></div>
-            <div class="shortcut"><kbd>Ctrl+C</kbd> <span>Close the focused terminal</span></div>
-            <div class="shortcut"><kbd>Ctrl+←</kbd> <span>Focus previous terminal</span></div>
-            <div class="shortcut"><kbd>Ctrl+→</kbd> <span>Focus next terminal</span></div>
-            <div class="shortcut"><kbd>↑ / ↓</kbd> <span>Navigate command history</span></div>
-            <div class="shortcut"><kbd>Mouse click</kbd> <span>Focus a terminal</span></div>
-            <div class="shortcut"><kbd>Mouse wheel</kbd> <span>Scroll focused terminal</span></div>
-          </div>
-        </div>
-      </div>
+    <div class="tab-content" id="t-run">
+      <p>Run Piux in QEMU with the default Makefile configuration (includes ext2 disk):</p>
+      <pre>make run</pre>
+      <p>To run without an ext2 disk (RAMFS fallback mode):</p>
+      <pre>qemu-system-i386 \
+  -cdrom piux.iso \
+  -m 512M \
+  -vga none \
+  -device VGA,xres=1280,yres=720</pre>
+      <div class="info">The kernel will fall back to RAMFS for basic filesystem operations when no usable ext2 disk is found.</div>
+    </div>
 
-      <div>
-        <div class="pwm-layouts">
-          <div class="layout-card">
-            <h4>1 terminal</h4>
-            <pre class="layout-ascii">┌──────────────────┐
-│                  │
-│    Terminal 1    │
-│                  │
-└──────────────────┘</pre>
-          </div>
-          <div class="layout-card">
-            <h4>2 terminals</h4>
-            <pre class="layout-ascii">┌─────────┬─────────┐
-│         │         │
-│  Term 1 │  Term 2 │
-│         │         │
-└─────────┴─────────┘</pre>
-          </div>
-          <div class="layout-card">
-            <h4>3 terminals</h4>
-            <pre class="layout-ascii">┌─────────┬─────────┐
-│         │ Term 2  │
-│  Term 1 ├─────────┤
-│         │ Term 3  │
-└─────────┴─────────┘</pre>
-          </div>
-          <div class="layout-card">
-            <h4>4 terminals</h4>
-            <pre class="layout-ascii">┌─────────┬─────────┐
-│ Term 1  │ Term 2  │
-├─────────┼─────────┤
-│ Term 3  │ Term 4  │
-└─────────┴─────────┘</pre>
-          </div>
-        </div>
-      </div>
+    <div class="tab-content" id="t-hw">
+      <p>Write the ISO to a USB device and boot on real x86 hardware:</p>
+      <pre>sudo dd if=piux.iso of=/dev/sdX bs=4M status=progress &amp;&amp; sync</pre>
+      <div class="warning">⚠&nbsp; Replace <code>/dev/sdX</code> with the correct USB device path. <strong>dd will completely erase the selected device.</strong></div>
+      <p>Boot from the USB device through your system firmware / BIOS boot menu. Piux requires a BIOS/legacy boot environment — UEFI is not currently supported.</p>
+    </div>
+
+    <div class="tab-content" id="t-gdb">
+      <p>Start QEMU with the GDB stub enabled:</p>
+      <pre>qemu-system-i386 \
+  -cdrom piux.iso \
+  -drive file=build/ext2.img,format=raw,if=ide \
+  -s -S</pre>
+      <p>In a second terminal, attach GDB to the kernel ELF:</p>
+      <pre>gdb build/kernel.elf</pre>
+      <p>Inside GDB:</p>
+      <pre>target remote :1234
+b kernel_main
+c</pre>
+      <div class="info">Serial logging is not yet implemented. A future serial subsystem could use COM1 (I/O port 0x3F8) with QEMU's <code>-serial stdio</code>.</div>
     </div>
   </div>
-</section>
 
+  <div class="section" id="docs">
+    <div class="section-header">Documentation</div>
+    <div class="section-body">
 
-<section id="requirements" style="background: var(--surface); border-top: 1px solid var(--border-dim); border-bottom: 1px solid var(--border-dim);">
-  <div class="container">
-    <div class="s-label">// minimum requirements</div>
-    <h2 class="s-title">Runs on constrained hardware</h2>
-    <p class="s-desc">
-      Piux targets deliberately minimal specs. Actual compatibility should be verified
-      through QEMU configurations before testing on real hardware.
-    </p>
-    <div class="req-grid">
-      <div class="req-card">
-        <div class="req-icon">🧠</div>
-        <h4>RAM</h4>
-        <div class="req-val">16 MiB</div>
+      <h2>Boot Flow</h2>
+      <div class="boot-flow">
+        <div class="boot-step"><div class="boot-num">1</div><div>BIOS / Firmware starts the boot process</div></div>
+        <div class="boot-step"><div class="boot-num">2</div><div>GRUB loads the Piux kernel ELF from the ISO</div></div>
+        <div class="boot-step"><div class="boot-num">3</div><div>GRUB recognizes the Multiboot1 header (<code>0x1BADB002</code>) and provides the information structure</div></div>
+        <div class="boot-step"><div class="boot-num">4</div><div><strong>BootX</strong> initializes the initial kernel environment (boot/ entry code)</div></div>
+        <div class="boot-step"><div class="boot-num">5</div><div>Kernel enters <code>kernel_main()</code> — core subsystems initialize (IDT, paging, PIT, GDT/TSS)</div></div>
+        <div class="boot-step"><div class="boot-num">6</div><div>RAMFS is initialized as the initial fallback filesystem</div></div>
+        <div class="boot-step"><div class="boot-num">7</div><div>Ext2 filesystem is detected on the ATA primary IDE channel and mounted when available</div></div>
+        <div class="boot-step"><div class="boot-num">8</div><div>First-boot installer TUI launches when no first-boot marker is present on ext2</div></div>
+        <div class="boot-step"><div class="boot-num">9</div><div>User authentication — SHA-256 password hash verified</div></div>
+        <div class="boot-step"><div class="boot-num">10</div><div><strong>pWM</strong> starts and creates the first terminal after successful login</div></div>
       </div>
-      <div class="req-card">
-        <div class="req-icon">💿</div>
-        <h4>Disk</h4>
-        <div class="req-val">8 MiB</div>
-      </div>
-      <div class="req-card">
-        <div class="req-icon">⚙️</div>
-        <h4>CPU</h4>
-        <div class="req-val">i386 / x86</div>
-      </div>
-      <div class="req-card">
-        <div class="req-icon">🔌</div>
-        <h4>Boot</h4>
-        <div class="req-val">BIOS + GRUB</div>
-      </div>
-      <div class="req-card">
-        <div class="req-icon">🖥️</div>
-        <h4>Video</h4>
-        <div class="req-val">Multiboot FB</div>
-      </div>
+
+      <h2>Memory Layout</h2>
+      <pre>0x00000000 ┌─────────────────────────┐
+           │       Low memory        │
+           │   Firmware / reserved   │
+0x00100000 ├─────────────────────────┤
+           │       Piux kernel       │
+           │  .multiboot / .text     │
+           │  .rodata / .data / .bss │
+           │                         │
+           │       Kernel stack      │
+           └─────────────────────────┘</pre>
+      <p>The kernel is linked to the 1 MiB region. Exact runtime usage depends on the kernel build, framebuffer configuration, filesystem state, and allocated buffers.</p>
+
+      <h2>Filesystem — Ext2</h2>
+      <p>Ext2 is accessed through the ATA PIO primary IDE channel. The VFS layer in <code>kernel/vfs.h</code> exposes Unix-like file descriptors (<code>vfs_open</code>, <code>vfs_read</code>, <code>vfs_write</code>, <code>vfs_seek</code>, <code>vfs_close</code>). Ext2 mode bits and ownership are checked on open; UID 0 bypasses permission checks.</p>
+      <p>Supported: superblocks and group descriptors, variable-size inodes, direct and single/double-indirect data blocks, inode and block bitmap allocation, directory traversal, file creation, sequential read/write, persistent editing via <code>nano</code>, and real file deletion (all block types freed, inode released).</p>
+      <p>Not yet supported: file rename, truncation with block freeing, triple-indirect growth, partition table management.</p>
+      <p>The filesystem is intentionally <strong>non-journaled</strong>. Initial device nodes: <code>/dev/console</code>, <code>/dev/keyboard</code>, <code>/dev/null</code>, <code>/dev/hda</code>.</p>
+      <div class="info">When an ext2 disk is unavailable, Piux falls back to its RAMFS implementation for basic in-memory filesystem operations.</div>
+
+      <h2>Syscall Interface — int 0x80</h2>
+      <p>Arguments are passed in <code>ebx</code>, <code>ecx</code>, <code>edx</code>. Return value is in <code>eax</code>.</p>
+      <table>
+        <tr><th>Number</th><th>Name</th><th>Description</th></tr>
+        <tr><td><code>0</code></td><td><code>read</code></td><td>Read from file descriptor</td></tr>
+        <tr><td><code>1</code></td><td><code>write</code></td><td>Write to file descriptor</td></tr>
+        <tr><td><code>2</code></td><td><code>open</code></td><td>Open a file path</td></tr>
+        <tr><td><code>3</code></td><td><code>close</code></td><td>Close a file descriptor</td></tr>
+        <tr><td><code>4</code></td><td><code>seek</code></td><td>Seek within a file</td></tr>
+        <tr><td><code>5</code></td><td><code>getpid</code></td><td>Get current process ID</td></tr>
+        <tr><td><code>6</code></td><td><code>getuid</code></td><td>Get current user ID</td></tr>
+        <tr><td><code>7</code></td><td><code>yield</code></td><td>Cooperative yield to scheduler</td></tr>
+        <tr><td><code>8</code></td><td><code>exit</code></td><td>Process exit</td></tr>
+      </table>
+
+      <h2>Adding Custom Commands</h2>
+      <p>Commands are auto-discovered from <code>bin/*.c</code> by the Makefile but must also be declared in <code>bin/commands.h</code>.</p>
+      <p>Create <code>bin/mycommand.c</code>:</p>
+      <pre>#include &lt;stdint.h&gt;
+
+void cmd_mycommand(const char *param,
+                   void (*vga_puts)(const char *),
+                   void (*vga_putc)(char)) {
+    (void)param;
+    (void)vga_putc;
+    vga_puts("My command output\n");
+}</pre>
+      <p>Register in <code>bin/commands.h</code>:</p>
+      <pre>extern void cmd_mycommand(const char *,
+                          void (*)(const char *),
+                          void (*)(char));
+
+{ "mycommand", cmd_mycommand },</pre>
+      <p>Rebuild: <code>make clean &amp;&amp; make</code></p>
+
+      <h2>Configuration Files</h2>
+      <p>System information is embedded from <code>etc/os-infos</code> and displayed by the <code>about</code> command:</p>
+      <pre>Name: Piux
+Version: 0.6.5 BETA
+Bootloader: GRUB Multiboot1
+Architecture: i386
+Video: 1280x720x32
+Developers: Anto</pre>
+      <p>pWM information is stored in <code>etc/pwm-info</code> and documented in <code>docs/PWM-COMMANDS.md</code>.</p>
+
+      <h2>Known Limitations</h2>
+      <ul class="cross-list">
+        <li>No FAT filesystem support</li>
+        <li>No complete interrupt/exception subsystem for every vector</li>
+        <li>No per-process address space isolation (ring3 ELF runs in shared identity-mapped memory)</li>
+        <li>No general-purpose allocator with free or page reclamation</li>
+        <li>Minimal polling-mode network stack — no DHCP, no DNS, no real sockets, no retransmission</li>
+        <li>No hardware-accelerated graphics</li>
+        <li>No complete partitioning subsystem</li>
+        <li>No ext2 rename, no truncate with block freeing, no triple-indirect file growth</li>
+        <li>Limited keyboard layout support — QWERTY only, no AltGr</li>
+        <li>No shell pipes, redirection, or variables</li>
+        <li>top is not yet a complete process monitor</li>
+        <li>pWM terminals are not independent user-space processes</li>
+      </ul>
+
     </div>
   </div>
-</section>
 
+  <div class="section" id="commands">
+    <div class="section-header">Available Commands</div>
+    <div class="section-body">
+      <p>After completing first-boot setup and logging in, type <code>help</code> to list commands. Example prompt:</p>
+      <pre>Welcome to Piux!
 
-<section id="screenshots">
-  <div class="container">
-    <div class="screens-hd">
-      <div class="s-label">// the project in action</div>
-      <h2 class="s-title">See what's been built</h2>
-      <p class="s-desc">
-        Screenshots from active development builds. Follow the GitHub repository
-        for the latest state of the project.
-      </p>
-    </div>
-
-    <div class="screens-grid">
-      <div class="screen-card wide">
-        <div class="screen-img-wrap">
-          <img src="src/screenshots/piux-first-boot.png" alt="Piux boot sequence and first-boot installer" />
-          <span class="screen-ph">// first-boot installer TUI</span>
-        </div>
-        <div class="screen-cap">
-          <h4>First-Boot Installer</h4>
-          <p>GRUB handoff → BootX → kernel_main → installer TUI → Unix directory tree setup</p>
-        </div>
+user@piux&gt; _</pre>
+      <div class="cmd-grid">
+        <div class="cmd-item"><div class="cmd-name">help</div><div class="cmd-desc">Display available commands</div></div>
+        <div class="cmd-item"><div class="cmd-name">about</div><div class="cmd-desc">Show Piux version and system info</div></div>
+        <div class="cmd-item"><div class="cmd-name">ls</div><div class="cmd-desc">List files and directories</div></div>
+        <div class="cmd-item"><div class="cmd-name">cd</div><div class="cmd-desc">Change the current directory</div></div>
+        <div class="cmd-item"><div class="cmd-name">cat</div><div class="cmd-desc">Read and print a file</div></div>
+        <div class="cmd-item"><div class="cmd-name">touch</div><div class="cmd-desc">Create an empty file</div></div>
+        <div class="cmd-item"><div class="cmd-name">mkdir</div><div class="cmd-desc">Create a directory</div></div>
+        <div class="cmd-item"><div class="cmd-name">nano</div><div class="cmd-desc">Edit and persist files on ext2</div></div>
+        <div class="cmd-item"><div class="cmd-name">echo</div><div class="cmd-desc">Print text — quoted args supported</div></div>
+        <div class="cmd-item"><div class="cmd-name">fs</div><div class="cmd-desc">Inspect and mount the ext2 filesystem</div></div>
+        <div class="cmd-item"><div class="cmd-name">clear</div><div class="cmd-desc">Clear the framebuffer display</div></div>
+        <div class="cmd-item"><div class="cmd-name">top</div><div class="cmd-desc">Show RAM and ext2 disk usage</div></div>
+        <div class="cmd-item"><div class="cmd-name">run</div><div class="cmd-desc">Execute a ring3 ELF binary</div></div>
+        <div class="cmd-item"><div class="cmd-name">net</div><div class="cmd-desc">Network — ARP, ICMP, UDP, HTTP download</div></div>
+        <div class="cmd-item"><div class="cmd-name">pix</div><div class="cmd-desc">Package manager — install / remove / info</div></div>
+        <div class="cmd-item"><div class="cmd-name">pwm / pmw</div><div class="cmd-desc">Start, stop, inspect, or reload pWM</div></div>
+        <div class="cmd-item"><div class="cmd-name">reboot</div><div class="cmd-desc">Reboot Piux</div></div>
+        <div class="cmd-item"><div class="cmd-name">shutdown</div><div class="cmd-desc">Shut down Piux</div></div>
       </div>
-
-      <div class="screen-card">
-        <div class="screen-img-wrap">
-          <img src="src/screenshots/pwm.png" alt="pWM tiled terminal environment" />
-          <span class="screen-ph">// pWM — 4 terminals</span>
-        </div>
-        <div class="screen-cap">
-          <h4>pwm Window Manager</h4>
-          <p>Four tiled terminals, framebuffer 1280×720 @ 32bpp</p>
-        </div>
-      </div>
-
-      <div class="screen-card">
-        <div class="screen-img-wrap">
-          <img src="src/screenshots/shell-ext2.png" alt="Piux shell and ext2 filesystem" />
-          <span class="screen-ph">// shell + ext2</span>
-        </div>
-        <div class="screen-cap">
-          <h4>Shell &amp; Ext2 Filesystem</h4>
-          <p>Built-in commands operating on a mounted ext2 disk</p>
-        </div>
-      </div>
-
-      <div class="screen-card">
-        <div class="screen-img-wrap">
-          <img src="src/screenshots/top.png" alt="Piux top command resource monitor" />
-          <span class="screen-ph">// top — resource monitor</span>
-        </div>
-        <div class="screen-cap">
-          <h4>Resource Monitor (top)</h4>
-          <p>RAM and ext2 storage usage reported in real time</p>
-        </div>
-      </div>
-
-      <div class="screen-card">
-        <div class="screen-img-wrap">
-          <img src="src/screenshots/nano.png" alt="Piux nano file editor on ext2" />
-          <span class="screen-ph">// nano — file editor</span>
-        </div>
-        <div class="screen-cap">
-          <h4>nano — File Editor</h4>
-          <p>Creates and writes files directly to the ext2 partition</p>
-        </div>
-      </div>
+      <div class="info" style="margin-top:11px;">All command handlers are compiled directly into the kernel from <code>bin/</code>. Stopping pWM drops back to the minimal kernel shell.</div>
     </div>
   </div>
-</section>
 
+  <div class="section" id="pwm">
+    <div class="section-header">pWM — Piux Window Manager</div>
+    <div class="section-body">
+      <p>pWM is Piux's text-based tiled terminal window manager. It starts automatically after a successful login. Each terminal has its own output, input, scroll state, and command history. The layout adapts automatically to the framebuffer dimensions. pWM uses a software back buffer to reduce visible flickering during redraws.</p>
+      <p>Stopping pWM with the <code>pwm</code> command returns the system to the minimal kernel shell. The same command handlers are reused inside pWM terminals.</p>
 
-<section id="community">
-  <div class="container">
-    <div class="s-label">// get involved</div>
-    <h2 class="s-title">Join the project</h2>
-    <p class="s-desc">
-      Piux is built entirely in the open. Every design decision, bug report,
-      and patch happens publicly. Whether you're a kernel hacker or just OS-curious,
-      there's a place for you here.
-    </p>
-
-    <div class="comm-grid">
-      <a href="https://github.com/projectpiux" class="comm-card" target="_blank" rel="noopener">
-        <div class="comm-icon">
-          <svg width="28" height="28" viewBox="0 0 16 16" fill="currentColor" style="color: var(--text-dim)">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-          </svg>
+      <h2>Supported Layouts</h2>
+      <div class="pwm-grid">
+        <div class="pwm-box">
+          <div class="pwm-label">1 Terminal</div>
+          <pre>┌──────────────────────┐
+│                      │
+│       Terminal       │
+│                      │
+└──────────────────────┘</pre>
         </div>
-        <h3>GitHub</h3>
-        <p>Browse the source, file issues, and open pull requests. Check
-           existing issues before reporting bugs — include QEMU config and
-           build output for best results.</p>
-        <span class="comm-link">
-          View the repository
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 8h10M8 3l5 5-5 5"/>
-          </svg>
-        </span>
-      </a>
+        <div class="pwm-box">
+          <div class="pwm-label">2 Terminals</div>
+          <pre>┌───────────┬───────────┐
+│           │           │
+│ Terminal  │ Terminal  │
+│           │           │
+└───────────┴───────────┘</pre>
+        </div>
+        <div class="pwm-box">
+          <div class="pwm-label">3 Terminals</div>
+          <pre>┌───────────┬───────────┐
+│           │ Terminal  │
+│ Terminal  ├───────────┤
+│           │ Terminal  │
+└───────────┴───────────┘</pre>
+        </div>
+        <div class="pwm-box">
+          <div class="pwm-label">4 Terminals</div>
+          <pre>┌───────────┬───────────┐
+│ Terminal  │ Terminal  │
+├───────────┼───────────┤
+│ Terminal  │ Terminal  │
+└───────────┴───────────┘</pre>
+        </div>
+      </div>
 
-      <a href="https://fluxer.gg/Yz25F58m" class="comm-card" target="_blank" rel="noopener">
-        <div class="comm-icon">💬</div>
-        <h3>Fluxer Community</h3>
-        <p>Join the Fluxer server to discuss development, ask questions, share
-           ideas, and connect with everyone building Piux. The best place to
-           get help before opening an issue.</p>
-        <span class="comm-link">
-          Join on Fluxer
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 8h10M8 3l5 5-5 5"/>
-          </svg>
-        </span>
-      </a>
+      <h2 style="margin-top:16px;">Keyboard Shortcuts</h2>
+      <table>
+        <tr><th>Shortcut</th><th>Action</th></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>Q</kbd></td><td>Open a new terminal (up to 4)</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>C</kbd></td><td>Close the focused terminal</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>←</kbd></td><td>Focus the previous terminal</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>→</kbd></td><td>Focus the next terminal</td></tr>
+        <tr><td>Mouse click</td><td>Transfer focus to a terminal</td></tr>
+        <tr><td>Mouse wheel</td><td>Scroll the focused terminal</td></tr>
+        <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>Navigate command history</td></tr>
+      </table>
+
+      <h2>Video System</h2>
+      <p>Piux uses the framebuffer supplied through the Multiboot information structure. Text is rendered via a software bitmap font directly into the framebuffer — no VGA text mode is used. The text grid is calculated from the available framebuffer dimensions rather than assuming a fixed 80×25 layout.</p>
+      <table>
+        <tr><th>Property</th><th>Value</th></tr>
+        <tr><td>Resolution</td><td>1280 × 720</td></tr>
+        <tr><td>Color depth</td><td>32-bit</td></tr>
+        <tr><td>Rendering</td><td>Software (no GPU acceleration)</td></tr>
+        <tr><td>Source</td><td><code>kernel/video.c</code>, <code>kernel/video.h</code></td></tr>
+      </table>
     </div>
   </div>
-</section>
 
-
-<section id="contribute">
-  <div class="container">
-    <div class="s-label">// start contributing</div>
-    <h2 class="s-title">From clone to first patch</h2>
-    <p class="s-desc">
-      Fork the repo, build it, boot it in QEMU, pick a
-      <span style="color:var(--green)">good-first-issue</span>, and send a PR.
-      Keep hardware-specific functionality in its own module where possible.
-    </p>
-
-    <div class="contrib-grid">
-      <div class="contrib-step">
-        <div class="step-n">01</div>
-        <h4>Install prerequisites</h4>
-        <p>Install the toolchain. Piux needs NASM, GCC, binutils, GRUB tools,
-           xorriso, QEMU, and e2fsprogs for disk image support.</p>
-        <div class="code-snippet">
-          <div><span class="cs-comment"># Debian / Ubuntu</span></div>
-          <div><span class="cs-prompt">$</span> sudo apt-get install nasm gcc binutils \</div>
-          <div>&nbsp;&nbsp;grub-pc-bin xorriso \</div>
-          <div>&nbsp;&nbsp;qemu-system-x86 e2fsprogs</div>
-        </div>
-      </div>
-
-      <div class="contrib-step">
-        <div class="step-n">02</div>
-        <h4>Clone &amp; build the ISO</h4>
-        <p>Clone the repository, then build. This produces <code style="color:var(--green);font-size:12px">piux.iso</code>,
-           a bootable GRUB ISO. Use <code style="color:var(--green);font-size:12px">fast-all.sh</code> for an
-           interactive TUI with build and run options.</p>
-        <div class="code-snippet">
-          <div><span class="cs-prompt">$</span> git clone https://github.com/projectpiux/piux-kernel.git</div>
-          <div><span class="cs-prompt">$</span> cd piux-kernel</div>
-          <div><span class="cs-prompt">$</span> make clean &amp;&amp; make</div>
-        </div>
-      </div>
-
-      <div class="contrib-step">
-        <div class="step-n">03</div>
-        <h4>Boot it &amp; send a PR</h4>
-        <p>Run in QEMU to see Piux boot. Then create a branch, make your change,
-           and open a Pull Request. QEMU provides the framebuffer and ext2 disk.</p>
-        <div class="code-snippet">
-          <div><span class="cs-prompt">$</span> make run</div>
-          <div><span class="cs-comment"># or: ./fast-all.sh</span></div>
-          <div><span class="cs-prompt">$</span> git checkout <span class="cs-flag">-b</span> feature/amazing-feature</div>
-          <div><span class="cs-prompt">$</span> gh pr create</div>
-        </div>
-      </div>
+  <div class="section" id="roadmap">
+    <div class="section-header">Roadmap &amp; Future Improvements</div>
+    <div class="section-body">
+      <ul class="arrow-list">
+        <li class="done">Interrupt descriptor table (IDT)</li>
+        <li class="done">PIT hardware interrupt handling</li>
+        <li class="done">Page-fault and general-protection gates</li>
+        <li class="done">Protected-mode identity paging</li>
+        <li class="done">Bounded kernel memory allocation</li>
+        <li class="done">Kernel/user GDT and TSS</li>
+        <li class="done">File and process system calls</li>
+        <li class="done">Kernel process table and cooperative scheduler</li>
+        <li class="done">User ELF loader and ring3 <code>run</code> command (blocking, shared address space)</li>
+        <li class="done">RTL8139 PCI driver (raw send/receive, polling mode)</li>
+        <li class="done">Minimal ARP/IPv4/ICMP/UDP stack and <code>net</code> command</li>
+        <li class="done">Ultra-minimal single-connection TCP client and HTTP/1.0 download</li>
+        <li class="done">Real ext2 file deletion (direct/single/double-indirect blocks and inode freed)</li>
+        <li class="done">pix package manager (install/remove/info/where) over plain HTTP</li>
+        <li>DHCP client</li>
+        <li>Reliable TCP — retransmission, reordering, multiple connections</li>
+        <li>DNS resolver</li>
+        <li>Per-process page directories and address space isolation</li>
+        <li>Task switching with saved CPU contexts</li>
+        <li>Preemptive scheduler</li>
+        <li><code>fork</code> / <code>exec</code> callable from ring3</li>
+        <li>IPC — pipes and shell redirection</li>
+        <li>Improved ext2 deletion, rename, and truncate support</li>
+        <li>Triple-indirect ext2 file growth</li>
+        <li>More keyboard layouts</li>
+        <li>Serial console (COM1 / 0x3F8)</li>
+        <li>Improved partition support</li>
+        <li>Socket API</li>
+        <li>Loadable modules</li>
+        <li>Graphical pWM</li>
+        <li>Additional framebuffer resolutions</li>
+        <li>DOOM port 💀</li>
+      </ul>
     </div>
   </div>
-</section>
 
+  <div class="section" id="contribute">
+    <div class="section-header">Contributing</div>
+    <div class="section-body">
+      <p>Contributions are welcome. When contributing kernel code, please keep hardware-specific functionality separated into appropriate modules where possible.</p>
+      <pre>git checkout -b feature/amazing-feature
+git commit -am "Add amazing feature"
+git push origin feature/amazing-feature</pre>
+      <p>Then open a Pull Request on <a href="https://github.com/projectpiux/piux-kernel" target="_blank">GitHub</a>. For issues and questions: open an Issue, check existing Issues, and include relevant build output, QEMU configuration, and hardware information when reporting bugs.</p>
 
-<section id="future">
-  <div class="container">
-    <div class="s-label">// future improvements</div>
-    <h2 class="s-title">What's coming next</h2>
-    <p class="s-desc">
-      Planned development targets, roughly in order of dependency.
-      Want to help with one? Open an issue or drop into Fluxer.
-    </p>
-    <div class="future-grid">
-      <div class="future-item"><span class="fi-dot"></span><span>Interrupt descriptor table (IDT)</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Hardware interrupt handling</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Exception handling</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Protected-mode paging</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Physical / virtual memory management</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>malloc / free</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>User mode</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>System calls</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Processes &amp; task switching</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Scheduler</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>IPC</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Pipes and shell redirection</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>ext2 deletion, rename, truncate</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Triple-indirect ext2 support</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>More keyboard layouts + AltGr</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Serial console (COM1)</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Improved partition support</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Networking</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Loadable kernel modules</span></div>
-      <div class="future-item"><span class="fi-dot"></span><span>Graphical pWM</span></div>
-      <div class="future-item special"><span class="fi-dot"></span><span>DOOM port 💀</span></div>
+      <h2>License</h2>
+      <p>Piux is released under the <strong>GNU General Public License v3.0</strong>. See <code>LICENSE</code> in the repository for details.</p>
+
+      <h2>Credits</h2>
+      <p>NASM documentation &nbsp;·&nbsp; GNU GRUB / Multiboot documentation &nbsp;·&nbsp; The broader open-source OS development community.</p>
     </div>
   </div>
-</section>
 
+</div>
 
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="f-logo">
-          <img src="src/piux.png" alt="Piux logo" />
-          <span class="nt">Piux</span>
-        </div>
-        <p class="f-tagline">A small 32-bit x86 OS built completely from scratch.</p>
-        <p class="f-credits">
-          Built with help from<br>
-          <span>NASM documentation · OSDev.org</span><br>
-          <span>GNU GRUB / Multiboot docs</span><br>
-          <span>The open-source OS dev community</span>
-        </p>
-      </div>
+<div id="sidebar">
 
-      <div class="footer-links">
-        <div class="f-col">
-          <h5>Project</h5>
-          <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#commands">Commands</a></li>
-            <li><a href="#pwm">pwm</a></li>
-            <li><a href="#screenshots">Screenshots</a></li>
-          </ul>
-        </div>
-        <div class="f-col">
-          <h5>Community</h5>
-          <ul>
-            <li><a href="https://github.com/projectpiux" target="_blank" rel="noopener">GitHub</a></li>
-            <li><a href="https://fluxer.gg/Yz25F58m" target="_blank" rel="noopener">Fluxer</a></li>
-            <li><a href="https://github.com/projectpiux/piux-kernel/issues" target="_blank" rel="noopener">Issue Tracker</a></li>
-          </ul>
-        </div>
-        <div class="f-col">
-          <h5>Resources</h5>
-          <ul>
-            <li><a href="https://github.com/projectpiux/piux-kernel/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contributing Guide</a></li>
-            <li><a href="https://github.com/projectpiux/piux-kernel/blob/main/LICENSE" target="_blank" rel="noopener">License (GPLv3)</a></li>
-            <li><a href="https://github.com/projectpiux/piux-kernel/blob/main/README.md" target="_blank" rel="noopener">README</a></li>
-            <li><a href="https://github.com/projectpiux/piux-kernel/blob/main/docs/PWM-COMMANDS.md" target="_blank" rel="noopener">pWM Docs</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <div>© 2026 The Piux Project Contributors</div>
-      <div class="footer-right">
-        <span>Released under the</span>
-        <span class="f-badge">GPLv3</span>
-        <span>license</span>
-      </div>
+  <div class="sb-box">
+    <div class="sb-header">Quick Info</div>
+    <div class="sb-body">
+      <div class="stat-row"><span class="stat-label">Type</span><span class="stat-value">Rolling release</span></div>
+      <div class="stat-row"><span class="stat-label">Architecture</span><span class="stat-value">i386 / x86</span></div>
+      <div class="stat-row"><span class="stat-label">Bootloader</span><span class="stat-value">GRUB MB1</span></div>
+      <div class="stat-row"><span class="stat-label">Video</span><span class="stat-value">1280×720×32</span></div>
+      <div class="stat-row"><span class="stat-label">Min RAM</span><span class="stat-value">16 MiB</span></div>
+      <div class="stat-row"><span class="stat-label">Min Disk</span><span class="stat-value">8 MiB</span></div>
+      <div class="stat-row"><span class="stat-label">License</span><span class="stat-value">GPLv3</span></div>
+      <div class="stat-row"><span class="stat-label">MB Magic</span><span class="stat-value">0x1BADB002</span></div>
     </div>
   </div>
-</footer>
-  <script src="js/index.js"></script>
+
+  <div class="sb-box">
+    <div class="sb-header">Download</div>
+    <div class="sb-body">
+      <p>Clone and build from source to get the latest rolling build or a specific commit snapshot.</p>
+      <a href="https://github.com/projectpiux/piux-kernel" class="btn btn-green" style="display:block;text-align:center;margin-bottom:8px;" target="_blank">GitHub Repository</a>
+      <p style="font-size:10px;color:#3a5060;text-align:center;">Rolling release · Build with <code>make</code></p>
+    </div>
+  </div>
+
+  <div class="sb-box">
+    <div class="sb-header">Source Layout</div>
+    <div class="sb-body">
+      <ul>
+        <li><code>boot/</code> — BootX entry code</li>
+        <li><code>kernel/</code> — Core kernel &amp; drivers</li>
+        <li><code>bin/</code> — Built-in commands</li>
+        <li><code>tui/</code> — Installer &amp; pWM</li>
+        <li><code>etc/</code> — Config data</li>
+        <li><code>docs/</code> — Documentation</li>
+        <li><code>build/</code> — Build artifacts</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sb-box">
+    <div class="sb-header">Syscalls (int 0x80)</div>
+    <div class="sb-body">
+      <ul>
+        <li><code>0</code> — read</li>
+        <li><code>1</code> — write</li>
+        <li><code>2</code> — open</li>
+        <li><code>3</code> — close</li>
+        <li><code>4</code> — seek</li>
+        <li><code>5</code> — getpid</li>
+        <li><code>6</code> — getuid</li>
+        <li><code>7</code> — yield</li>
+        <li><code>8</code> — exit</li>
+      </ul>
+      <p style="margin-top:7px;">Args: <code>ebx</code>, <code>ecx</code>, <code>edx</code><br>Return: <code>eax</code></p>
+    </div>
+  </div>
+
+  <div class="sb-box">
+    <div class="sb-header">Device Nodes</div>
+    <div class="sb-body">
+      <ul>
+        <li><code>/dev/console</code></li>
+        <li><code>/dev/keyboard</code></li>
+        <li><code>/dev/null</code></li>
+        <li><code>/dev/hda</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sb-box">
+    <div class="sb-header">Troubleshooting</div>
+    <div class="sb-body">
+      <p><strong style="color:#8aaccc;">GRUB Not Found</strong><br>
+      Install <code>grub-pc-bin</code> and <code>xorriso</code> for your distro.</p>
+      <p><strong style="color:#8aaccc;">QEMU Not Starting</strong><br>
+      Run <code>qemu-system-i386 --version</code> to verify the package is installed.</p>
+      <p><strong style="color:#8aaccc;">No Framebuffer</strong><br>
+      Ensure QEMU provides a Multiboot-compatible framebuffer at 1280×720×32bpp.</p>
+      <p><strong style="color:#8aaccc;">Keyboard Issues</strong><br>
+      Check QEMU is exposing a compatible PS/2 keyboard device.</p>
+    </div>
+  </div>
+
+  <div class="sb-box">
+    <div class="sb-header">Links</div>
+    <div class="sb-body">
+      <ul>
+        <li><a href="https://github.com/projectpiux/piux-kernel" target="_blank">GitHub Repository</a></li>
+        <li><a href="https://www.gnu.org/software/grub/manual/multiboot/" target="_blank">Multiboot Spec</a></li>
+        <li><a href="https://nasm.us/doc/" target="_blank">NASM Documentation</a></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div id="footer">
+  <div id="footer-inner">
+    <p>Piux Kernel BETA &nbsp;·&nbsp; <a href="https://github.com/projectpiux/piux-kernel" target="_blank">GitHub</a> &nbsp;·&nbsp; GPLv3 License</p>
+    <p>Built with NASM · freestanding C · GNU ld</p>
+  </div>
+</div>
+
+<script>
+function switchTab(el, id) {
+  const sec = el.closest('.section');
+  sec.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  sec.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+// Nav highlighting on scroll
+const sections = ['about','features','requirements','install','docs','commands','pwm','roadmap','contribute'];
+const navLinks = {};
+sections.forEach(id => {
+  const el = document.getElementById(id);
+  const a  = document.querySelector('#nav a[href="#' + id + '"]');
+  if (el && a) navLinks[id] = { el, a };
+});
+
+window.addEventListener('scroll', () => {
+  let current = 'about';
+  sections.forEach(id => {
+    const s = navLinks[id];
+    if (s && s.el.getBoundingClientRect().top <= 60) current = id;
+  });
+  document.querySelectorAll('#nav a').forEach(a => a.classList.remove('active'));
+  if (navLinks[current]) navLinks[current].a.classList.add('active');
+});
+
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior:'smooth', block:'start' }); }
+  });
+});
+</script>
+
 </body>
 </html>
